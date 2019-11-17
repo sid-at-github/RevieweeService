@@ -3,11 +3,8 @@ package team.dexter.RevieweeService.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.ws.http.HTTPException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +12,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import team.dexter.CodeReviewerCommons.dtos.RevieweeDto;
 import team.dexter.CodeReviewerCommons.dtos.RevieweeRequestDto;
 import team.dexter.RevieweeService.daos.RevieweeDao;
+import team.dexter.RevieweeService.exceptions.InternalServerError;
 import team.dexter.RevieweeService.exceptions.ResourceExistException;
+import team.dexter.RevieweeService.exceptions.ResourceNotFoundException;
 import team.dexter.RevieweeService.models.Reviewee;
 
 @Service
@@ -34,18 +33,21 @@ public class RevieweeService {
 		} catch (DataIntegrityViolationException e) {
 			throw new ResourceExistException();
 		} catch (Exception e) {
-			throw new HTTPException(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			throw new InternalServerError();
 		}
 	}
 
-	public List<Reviewee> getReviewee(RevieweeRequestDto revieweeRequestDto) {
-		List<Reviewee> revieweeByUsername = new ArrayList<>();
+	public List<Reviewee> getRevieweeList(RevieweeRequestDto revieweeRequestDto) {
+		List<Reviewee> revieweeByUsernameAndPassword = new ArrayList<>();
 		try {
-			revieweeByUsername = revieweeDao.findByUsernameAndPassword(revieweeRequestDto.getUsername(),
+			revieweeByUsernameAndPassword = revieweeDao.findByUsernameAndPassword(revieweeRequestDto.getUsername(),
 					revieweeRequestDto.getPassword());
+			if (revieweeByUsernameAndPassword.isEmpty()) {
+				throw new ResourceNotFoundException();
+			}
 		} catch (Exception e) {
-
+			throw new InternalServerError();
 		}
-		return revieweeByUsername;
+		return revieweeByUsernameAndPassword;
 	}
 }

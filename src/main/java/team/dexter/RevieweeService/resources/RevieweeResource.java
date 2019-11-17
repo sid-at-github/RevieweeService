@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import team.dexter.CodeReviewerCommons.dtos.RevieweeDto;
 import team.dexter.CodeReviewerCommons.dtos.RevieweeRequestDto;
-import team.dexter.RevieweeService.exceptions.ResourceNotFoundException;
 import team.dexter.RevieweeService.models.Reviewee;
 import team.dexter.RevieweeService.services.RevieweeService;
 
@@ -29,11 +28,7 @@ public class RevieweeResource {
 	}
 
 	@GetMapping("/reviewee")
-	public List<Reviewee> getReviewee(RevieweeRequestDto revieweeRequestDto) {
-		List<Reviewee> revieweeByUsername = revieweeService.getReviewee(revieweeRequestDto);
-		if (revieweeByUsername.isEmpty()) {
-			throw new ResourceNotFoundException();
-		}
-		return revieweeByUsername;
+	public List<Reviewee> getRevieweeList(RevieweeRequestDto revieweeRequestDto) {
+		return revieweeService.getRevieweeList(revieweeRequestDto);
 	}
 }
