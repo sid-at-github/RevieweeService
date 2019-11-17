@@ -14,6 +14,7 @@ public class Reviewee {
 	@Column(name = "id")
 	private long id;
 
+	@Column(unique = true)
 	private String username;
 	private String email;
 	private String password;

@@ -10,6 +10,6 @@ import team.dexter.RevieweeService.models.Reviewee;
 @Repository
 public interface RevieweeDao extends CrudRepository<Reviewee, Long> {
 
-	public List<Reviewee> findByUsername(String username);
+	public List<Reviewee> findByUsernameAndPassword(String username, String password);
 
 }
